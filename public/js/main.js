@@ -1,16 +1,22 @@
-const search = new URLSearchParams(window.location.search);
-const name = search.get('name');
+import { getColors } from './services/colorsApi.js';
 
-const root = document.getElementById('root');
-const h1 = document.createElement('h1');
-const h2 = document.createElement('h2');
+const main = document.getElementById('root');
 
-fetch(`/api/v1/colors/${name}`)
-  .then(res => res.json())
-  .then(color => {
-    h1.textContent = `${color.name}`;
-    h2.textContent = `HEX: ${color.hex}, RGB: ${color.r} - ${color.g} - ${color.b}`;
+const colorsList = document.createElement('ul');
+
+getColors()
+  .then(colors => {
+    colors.forEach(color => {
+      const li = document.createElement('li');
+      const anchor = document.createElement('a');
+
+      li.textContent = `${color.name} - ${color.hex} - R:${color.r} G:${color.g} B:${color.b}`;
+
+      anchor.href = `/colors.html?color=${color.name}`;
+      anchor.appendChild(li);
+      colorsList.appendChild(anchor);
+    });
   });
 
-root.appendChild(h1);
-root.appendChild(h2);
+
+main.appendChild(colorsList);
